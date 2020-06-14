@@ -1,5 +1,7 @@
 // 1. 虚拟代理
 
+/* ---------------------------- */
+
 // 虚拟代理实现懒加载
 
 // 目标对象
@@ -34,6 +36,35 @@ const proxyImage = (function () {
 
 // test case
 proxyImage.setSrc('remote.jpg')
+
+/* ---------------------------- */
+
+// 虚拟代理实现http请求合并
+
+// 目标对象
+const synchronousFile = function (ids) {
+  console.log('sync file', ids)
+}
+
+// 代理对象
+const proxySynchrounousFile = function () {
+  let cache = [],
+    timer = null
+
+  return function (id) {
+    cache.push(id)
+    if (timer) return
+
+    timer = setTimeout(function () {
+      synchronousFile(cache)
+      clearTimeout(timer)
+      timer = null
+      cache.length = 0 // 清空
+    }, 2000)
+  }
+}
+
+/* ---------------------------- */
 
 // 2. 缓存代理
 
